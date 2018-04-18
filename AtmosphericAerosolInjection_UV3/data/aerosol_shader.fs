@@ -15,11 +15,11 @@ void main(void)
 
 		//make a circle
 		if (rad > 1.){
-			//discard;
+			discard;
 		}
 
 
-	vec4 color = particleColor;
+	vec4 color = mix(particleColor,vec4(1),boost);
 	color.a *=  uv_fade * uv_alpha;
 
 	fragColor = color;

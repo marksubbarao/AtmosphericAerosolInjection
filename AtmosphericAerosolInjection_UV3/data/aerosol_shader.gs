@@ -1,4 +1,4 @@
-layout(points) in;
+layout(triangles) in;
 layout(triangle_strip, max_vertices = 4) out;
 
 uniform mat4 uv_modelViewProjectionMatrix;
@@ -14,6 +14,9 @@ uniform float uv_simulationtimeSeconds;
 uniform float uv_fade;
 
 uniform float particleSize;
+uniform float simTime;
+uniform float rotationEqTime;
+uniform float rotationPoleTime;
 
 
 out vec2 texcoord;
@@ -76,7 +79,7 @@ void drawSprite(vec4 position, float radius, float rotation)
 void drawFlatSprite(vec2 lonlat, float radius, float rotation)
 {
 	vec3 pos = getPos(lonlat);
-	float deltaLat = 1.0;
+	float deltaLat = 0.01;
 	vec3 posUp = getPos(lonlat + vec2(0,deltaLat));
 	vec3 up = normalize(posUp-pos);
 	vec3 side = normalize(cross(up,pos));
@@ -109,5 +112,10 @@ void main()
 {
 	float size = particleSize;
 	boost=1.0;
-	drawFlatSprite( gl_in[0].gl_Position.xy, size, 0.0);
+	float sparkle = gl_in[0].gl_Position.z;
+	boost = max(1 -abs(fract(uv_simulationtimeSeconds-sparkle))/0.02,0.0);
+	vec2 lonlat=vec2(gl_in[0].gl_Position.x,gl_in[0].gl_Position.y*clamp(simTime,0,1));
+	float rotPeriod = mix(rotationEqTime,rotationPoleTime,gl_in[0].gl_Position.y);
+	lonlat.x-=6.283*fract(uv_simulationtimeSeconds/rotPeriod);
+	drawFlatSprite(lonlat, size, 0.0);
 }
