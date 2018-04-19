@@ -115,7 +115,7 @@ void main()
 	float sparkle = gl_in[0].gl_Position.z;
 	boost = max(1 -abs(fract(uv_simulationtimeSeconds-sparkle))/0.02,0.0);
 	vec2 lonlat=vec2(gl_in[0].gl_Position.x,gl_in[0].gl_Position.y*clamp(simTime,0,1));
-	float rotPeriod = mix(rotationEqTime,rotationPoleTime,gl_in[0].gl_Position.y);
+	float rotPeriod = mix(rotationEqTime,rotationPoleTime,abs(gl_in[0].gl_Position.y/1.5708));
 	lonlat.x-=6.283*fract(uv_simulationtimeSeconds/rotPeriod);
 	drawFlatSprite(lonlat, size, 0.0);
 }
